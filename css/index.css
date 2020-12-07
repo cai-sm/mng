@@ -33,3 +33,100 @@ hr {
 	border-top: 1px solid var(--mainColor);
 	padding: 0;
 }
+
+.dialog {
+	width: 400px;
+	/* height: 100px; */
+	box-shadow: 2px 2px 24px rgba(0.9, 100, 100, 100);
+	position: absolute;
+	top: 27%;
+	left: 37%;
+	background-color: var(--bgColor);
+}
+
+.msg {
+	z-index: 10;
+	top: 30%;
+	left: 40%;
+}
+
+.dialog .dialog_head {
+	padding: 10px;
+	border-bottom: 1px solid var(--mainColor);
+	font-family: '微软雅黑';
+	font-size: 14px;
+	font-weight: bolder;
+
+}
+
+.dialog .dialog_head .iconal-icon-close {
+	float: right;
+}
+
+.dialog .dialog_head .iconal-icon-close:hover {
+	color: red;
+}
+
+.dialog .dialog_content {
+	padding: 10px;
+	min-height: 50px;
+}
+
+.dialog .dialog_content .row {
+	margin-top: 5px;
+}
+
+.dialog .dialog_content span {
+	display: inline-block;
+	width: 20%;
+	text-align: right;
+}
+
+.dialog .dialog_content input[type=text] {
+	width: 70%;
+	text-align: left;
+}
+
+.dialog .dialog_foot {
+	border-top: 1px solid var(--mainColor);
+	padding: 10px;
+	text-align: right;
+}
+
+.dialog .dialog_foot input[type=button]:first-child {
+	background-color: var(--mainColor);
+	color: var(--bgColor);
+
+}
+
+#list_url {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+}
+
+#list_url li {
+	color: #222222;
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#list_url li a {
+	text-decoration: none;
+	border-bottom: 1px solid var(--mainColor);
+	height: 30px;
+	line-height: 30px;
+	padding: 5px;
+}
+
+#list_url li a:hover {
+	box-shadow: 0 0 5px rgba(0.9, 10, 10, 10);
+}
+
+.link_url {
+	color: var(--mainColor);
+	font-size: 12px;
+}

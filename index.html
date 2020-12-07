@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title></title>
+		<link rel="stylesheet" type="text/css" href="font/iconfont.css" />
 		<link class="cssLink" rel="stylesheet" type="text/css" href="css/index.css" />
 	</head>
 	<body>
@@ -12,12 +13,67 @@
 		<hr>
 		<ul id="list_url">
 		</ul>
+		<div class="dialog msg" style="display: none;">
+			<div class="dialog_head">系统提示<i class="iconfont iconal-icon-close"></i></div>
+			<div class="dialog_content">kkkk</div>
+		</div>
+		<div class="dialog dialog_edit" style="display: none; width: 30%;">
+			<div class="dialog_head">新增<i class="iconfont iconal-icon-close"></i></div>
+			<div class="dialog_content">
+				<div class="row">
+					<span>别名：</span>
+					<input type="text" id="tip" />
+				</div>
+				<div class="row">
+					<span>URL：</span>
+					<input type="text" id="url" />
+				</div>
+			</div>
+			<div class="dialog_foot">
+				<input id="btn_save" type="button" value="保存" />
+				<input id="btn_cancel" type="button" value="取消" />
+			</div>
+		</div>
 	</body>
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/FileSaver.js"></script>
 	<script type="text/javascript">
 		var styleList = localStorage.getItem("styleList");
 		loadStyle();
+
+		function delUrl(index) {
+			var urlList = localStorage.getItem("urlList");
+
+			if (!urlList) {
+				urlList = []
+			} else {
+				urlList = JSON.parse(urlList);
+			}
+			if (index < urlList.length) {
+				urlList.splice(index, 1);
+			}
+			localStorage.setItem("urlList", JSON.stringify(urlList));
+			$("#btn_getItem").trigger('click');
+		}
+
+		function changeUrl(index, name, url) {
+			var urlList = localStorage.getItem("urlList");
+			if (!urlList) {
+				urlList = []
+			} else {
+				urlList = JSON.parse(urlList);
+			}
+			if (index < urlList.length) {
+				if (name) {
+					urlList[index].name = name;
+				}
+				if (url) {
+					urlList[index].url = url;
+				}
+			}
+			localStorage.setItem("urlList", JSON.stringify(urlList));
+			$("#btn_getItem").trigger('click');
+		}
 
 		function loadStyle() {
 			if (styleList) {
@@ -78,21 +134,8 @@
 			saveAs(blob, "url_list.json");
 		}
 		$("#btn_setItem").on('click', function() {
-			var urlList = localStorage.getItem("urlList");
-			console.log(urlList);
 
-			if (!urlList) {
-				urlList = []
-			} else {
-				urlList = JSON.parse(urlList);
-			}
-
-			var newUrl = $("#txt_url").val();
-			if (newUrl && newUrl.trim() != '') {
-				urlList.push(newUrl);
-			}
-			localStorage.setItem("urlList", JSON.stringify(urlList));
-			$("#btn_getItem").trigger("click");
+			$(".dialog_edit").show();
 		});
 		$("#btn_getItem").on('click', function() {
 			// localStorage.removeItem("urlList");
@@ -103,10 +146,44 @@
 			$("#list_url").empty();
 			urlList = JSON.parse(urlList);
 			for (var i = 0; i < urlList.length; i++) {
-				var itemLi = $("<li><a>" + urlList[i] + "</a></li>");
+				var itemLi = $("<li><a href='" + urlList[i].url + "' target='_blank'>" + urlList[i].name +
+					"：\t<font class='link_url'>" + urlList[
+						i].url + "</font></a></li>");
 				$("#list_url").append(itemLi);
 			}
 		});
 		$("#btn_getItem").trigger('click');
+		$(".iconal-icon-close").on('click', function() {
+			$(this).parents('.dialog').hide();
+		});
+		$("#btn_cancel").on('click', function() {
+			$(".iconal-icon-close").trigger('click');
+		});
+
+		function showMsg(msg) {
+			$('.dialog.msg .dialog_content').html(msg);
+			$('.dialog.msg').show();
+		}
+		$("#btn_save").on('click', function() {
+			var newUrl = $("#url").val();
+			var tip = $("#tip").val();
+			var urlList = localStorage.getItem("urlList");
+
+			if (!urlList) {
+				urlList = []
+			} else {
+				urlList = JSON.parse(urlList);
+			}
+
+			if (newUrl && newUrl.trim() != '') {
+				urlList.push({
+					name: tip,
+					url: newUrl
+				});
+			}
+			localStorage.setItem("urlList", JSON.stringify(urlList));
+			$("#btn_getItem").trigger("click");
+			$('.dialog_edit').hide();
+		});
 	</script>
 </html>
