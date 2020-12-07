@@ -1,0 +1,16 @@
+{
+  "id": "2253938",
+  "name": "urlmng",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "13263965",
+      "name": "al-icon-close",
+      "font_class": "al-icon-close",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    }
+  ]
+}
