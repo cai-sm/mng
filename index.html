@@ -1,10 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link class="cssLink" rel="stylesheet" type="text/css" href="css/index.css" />
+	</head>
+	<body>
+		<input id="txt_url" type="text" placeholder="请输入访问地址" />
+		<input id="btn_getItem" type="button" value="查询" />
+		<input id="btn_setItem" type="button" value="添加" />
+		<hr>
+		<ul id="list_url">
+		</ul>
+	</body>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/FileSaver.js"></script>
+	<script type="text/javascript">
+		var styleList = localStorage.getItem("styleList");
+		loadStyle();
 
-</body>
+		function loadStyle() {
+			if (styleList) {
+				styleList = JSON.parse(styleList);
+			} else {
+				styleList = ["index", "index2"];
+			}
+			setStyle(localStorage.getItem("currStyle") || 0);
+		}
+
+		function setStyle(currStyle) {
+			localStorage.setItem("currStyle", currStyle);
+			$(".cssLink").attr({
+				href: 'css/' + styleList[currStyle] + '.css'
+			});
+			return "--setStyle--";
+		}
+
+		function switchStyle() {
+			var currStyle = localStorage.getItem("currStyle");
+			if (!currStyle || Number(currStyle) == styleList.length - 1) {
+				currStyle = -1;
+			}
+			currStyle++;
+			setStyle(currStyle);
+			return "--switchStyle--";
+		}
+
+		function consoleTypes() {
+			console.log("log");
+			console.info("info");
+			console.warn("warn");
+			console.error("error");
+			return "Please Enter Anykey To Continue!";
+		}
+
+		function removeItem(type) {
+			if (type) {
+				localStorage.removeItem(type);
+			} else {
+				localStorage.removeItem("urlList");
+				localStorage.removeItem("styleList");
+				localStorage.removeItem("currStyle");
+			}
+
+			console.log('Remove Item Successfully!');
+		}
+
+		function save(path) {
+			var content = localStorage.getItem("urlList");
+			if (content) {
+				console.error('There is no file to save!');
+				return;
+			}
+			var blob = new Blob([content], {
+				type: "text/plain;charset=utf-8"
+			});
+			saveAs(blob, "url_list.json");
+		}
+		$("#btn_setItem").on('click', function() {
+			var urlList = localStorage.getItem("urlList");
+			console.log(urlList);
+
+			if (!urlList) {
+				urlList = []
+			} else {
+				urlList = JSON.parse(urlList);
+			}
+
+			var newUrl = $("#txt_url").val();
+			if (newUrl && newUrl.trim() != '') {
+				urlList.push(newUrl);
+			}
+			localStorage.setItem("urlList", JSON.stringify(urlList));
+			$("#btn_getItem").trigger("click");
+		});
+		$("#btn_getItem").on('click', function() {
+			// localStorage.removeItem("urlList");
+			var urlList = localStorage.getItem("urlList");
+			if (!urlList) {
+				return;
+			}
+			$("#list_url").empty();
+			urlList = JSON.parse(urlList);
+			for (var i = 0; i < urlList.length; i++) {
+				var itemLi = $("<li><a>" + urlList[i] + "</a></li>");
+				$("#list_url").append(itemLi);
+			}
+		});
+		$("#btn_getItem").trigger('click');
+	</script>
 </html>

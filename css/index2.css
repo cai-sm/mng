@@ -1,18 +1,18 @@
 @import "const.css";
 
 body {
-	background-color: var(--bgColor);
+	background-color: var(--bgColor-2);
 }
 
 input[type=text],
 input[type=button] {
-	border: 1px solid var(--mainColor);
+	border: 1px solid var(--mainColor-2);
 	border-radius: 3px;
 	height: 30px;
 	vertical-align: middle;
 	padding: 0 8px;
-	background-color: var(--bgColor);
-	color: var(--mainColor);
+	background-color: var(--bgColor-2);
+	color: var(--mainColor-2);
 }
 
 input[type=text] {}
@@ -30,6 +30,6 @@ input[type=button] {
 
 hr {
 	border: 0;
-	border-top: 1px solid var(--mainColor);
+	border-top: 1px solid var(--mainColor-2);
 	padding: 0;
 }
