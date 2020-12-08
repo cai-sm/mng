@@ -14,12 +14,13 @@
 		<ul id="list_url">
 		</ul>
 		<div class="dialog msg" style="display: none;">
-			<div class="dialog_head">系统提示<i class="iconfont iconal-icon-close"></i></div>
+			<div class="dialog_head">系统提示<i class="iconfont iconfont_al-icon-close"></i></div>
 			<div class="dialog_content">kkkk</div>
 		</div>
 		<div class="dialog dialog_edit" style="display: none; width: 30%;">
-			<div class="dialog_head">新增<i class="iconfont iconal-icon-close"></i></div>
+			<div class="dialog_head">新增<i class="iconfont iconfont_al-icon-close"></i></div>
 			<div class="dialog_content">
+				<input type="hidden" id="aid" value='-1' />
 				<div class="row">
 					<span>别名：</span>
 					<input type="text" id="tip" />
@@ -134,7 +135,9 @@
 			saveAs(blob, "url_list.json");
 		}
 		$("#btn_setItem").on('click', function() {
-
+			$("#aid").val('-1');
+			$("#tip").val('');
+			$("#url").val('');
 			$(".dialog_edit").show();
 		});
 		$("#btn_getItem").on('click', function() {
@@ -146,18 +149,62 @@
 			$("#list_url").empty();
 			urlList = JSON.parse(urlList);
 			for (var i = 0; i < urlList.length; i++) {
-				var itemLi = $("<li><a href='" + urlList[i].url + "' target='_blank'>" + urlList[i].name +
+				var itemLi = $("<li><a href='" + urlList[i].url + "' title='" + urlList[i].url + "' target='_blank' aindex='" + i +
+					"'>" + urlList[i]
+					.name +
 					"：\t<font class='link_url'>" + urlList[
-						i].url + "</font></a></li>");
+						i].url +
+					"</font></a><i class='iconfont iconfont_edit' title='编辑'></i> <i class='iconfont iconfont_del' title='删除'></i> <i class='iconfont iconfont_up' title='上移'></i> <i class='iconfont iconfont_down' title='下移'></i></li>"
+				);
 				$("#list_url").append(itemLi);
 			}
+			$('.iconfont_edit').on('click', function() {
+				var aindex = Number($(this).prevAll('a').attr('aindex'));
+				$("#aid").val(aindex);
+				$("#tip").val(urlList[aindex].name);
+				$("#url").val(urlList[aindex].url);
+				$(".dialog_edit").show();
+			});
+			$('.iconfont_del').on('click', function() {
+				var aindex = Number($(this).prevAll('a').attr('aindex'));
+				urlList.splice(aindex, 1);
+				localStorage.setItem("urlList", JSON.stringify(urlList));
+				$("#btn_getItem").trigger("click");
+			});
+			$('.iconfont_up').on('click', function() {
+				var aindex = Number($(this).prevAll('a').attr('aindex'));
+				if (aindex == 0) {
+					return;
+				}
+				var temp = urlList[aindex - 1];
+				urlList[aindex - 1] = urlList[aindex];
+				urlList[aindex] = temp;
+				localStorage.setItem("urlList", JSON.stringify(urlList));
+				$("#btn_getItem").trigger("click");
+			});
+			$('.iconfont_down').on('click', function() {
+				var aindex = Number($(this).prevAll('a').attr('aindex'));
+				if (aindex == urlList.length - 1) {
+					return;
+				}
+				var temp = urlList[aindex + 1];
+				urlList[aindex + 1] = urlList[aindex];
+				urlList[aindex] = temp;
+				localStorage.setItem("urlList", JSON.stringify(urlList));
+				$("#btn_getItem").trigger("click");
+			});
 		});
 		$("#btn_getItem").trigger('click');
-		$(".iconal-icon-close").on('click', function() {
+		$(".iconfont_al-icon-close").on('click', function() {
+			if (!$(this).parents('.dialog').hasClass('msg')) {
+				$("#aid").val('-1');
+				$("#tip").val('');
+				$("#url").val('');
+			}
 			$(this).parents('.dialog').hide();
 		});
 		$("#btn_cancel").on('click', function() {
-			$(".iconal-icon-close").trigger('click');
+			$(".iconfont_al-icon-close").trigger('click');
 		});
 
 		function showMsg(msg) {
@@ -167,6 +214,14 @@
 		$("#btn_save").on('click', function() {
 			var newUrl = $("#url").val();
 			var tip = $("#tip").val();
+			if (!tip || $.trim(tip) == '') {
+				showMsg("别名不能为空！")
+				return;
+			}
+			if (!newUrl || $.trim(newUrl) == '') {
+				showMsg("Url不能为空！")
+				return;
+			}
 			var urlList = localStorage.getItem("urlList");
 
 			if (!urlList) {
@@ -174,12 +229,18 @@
 			} else {
 				urlList = JSON.parse(urlList);
 			}
-
-			if (newUrl && newUrl.trim() != '') {
-				urlList.push({
-					name: tip,
-					url: newUrl
-				});
+			var aindex = $("#aid").val();
+			console.log(aindex);
+			aindex = Number(aindex);
+			var formData = {
+				name: tip,
+				url: newUrl
+			}
+			console.log(aindex);
+			if (aindex > -1) {
+				urlList[aindex] = formData
+			} else {
+				urlList.push(formData);
 			}
 			localStorage.setItem("urlList", JSON.stringify(urlList));
 			$("#btn_getItem").trigger("click");

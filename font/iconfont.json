@@ -2,9 +2,44 @@
   "id": "2253938",
   "name": "urlmng",
   "font_family": "iconfont",
-  "css_prefix_text": "icon",
+  "css_prefix_text": "iconfont_",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "1488753",
+      "name": "up",
+      "font_class": "up",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "122722",
+      "name": "add",
+      "font_class": "add",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
+    },
+    {
+      "icon_id": "1207861",
+      "name": "edit",
+      "font_class": "edit",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "1225391",
+      "name": "down",
+      "font_class": "down",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "1321273",
+      "name": "del",
+      "font_class": "del",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
     {
       "icon_id": "13263965",
       "name": "al-icon-close",
