@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<title></title>
+		<link rel="shortcut icon" href="img/ico/favicon.ico" type="image/x-icon">
 		<link rel="stylesheet" type="text/css" href="font/iconfont.css" />
 		<link class="cssLink" rel="stylesheet" type="text/css" href="css/index.css" />
 	</head>
@@ -11,7 +12,16 @@
 		<input id="btn_getItem" type="button" value="查询" />
 		<input id="btn_setItem" type="button" value="添加" />
 		<hr>
-		<ul id="list_url">
+		<ul id="list_url" class="list_url">
+		</ul>
+		<ul id="list_url_2" class="list_url">
+			<li>ddd</li>
+		</ul>
+		<ul id="list_url_3" class="list_url">
+			<li>ddd</li>
+		</ul>
+		<ul id="list_url_4" class="list_url">
+			<li>ddd</li>
 		</ul>
 		<div class="dialog msg" style="display: none;">
 			<div class="dialog_head">系统提示<i class="iconfont iconfont_al-icon-close"></i></div>
@@ -39,6 +49,7 @@
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script type="text/javascript" src="js/FileSaver.js"></script>
 	<script type="text/javascript">
+		console.log(window.location.protocol);
 		var styleList = localStorage.getItem("styleList");
 		loadStyle();
 
@@ -149,7 +160,8 @@
 			$("#list_url").empty();
 			urlList = JSON.parse(urlList);
 			for (var i = 0; i < urlList.length; i++) {
-				var itemLi = $("<li><a href='" + urlList[i].url + "' title='" + urlList[i].url + "' target='_blank' aindex='" + i +
+				var itemLi = $("<li><i class='iconfont iconfont_chrome logo'></i><a href='" + urlList[i].url + "' title='" +
+					urlList[i].url + "' target='_blank' aindex='" + i +
 					"'>" + urlList[i]
 					.name +
 					"：\t<font class='link_url'>" + urlList[
