@@ -19,12 +19,39 @@
 				height:100vh;
 				padding: 8px;
 				border: 0;
+				font-family: "微软雅黑";
+			}
+			#alert{
+				text-align: center;
+			}
+			#msg{
+				position: absolute;
+				width: 100px;
+				height: 30px;
+				line-height: 30px;
+				font-family: "微软雅黑";
+				font-size: 12px;
+				color: whitesmoke;
+				border: 1px solid seagreen;
+				z-index: 10;
+				top: 5px;
+				background-color: seagreen;
+				border-radius: 30px;
+				text-align: center;
+				padding-left: 10px;
+				padding-right: 10px;
+				opacity: 0.8;
+				box-shadow: 1px 3px 8px rgba(10,10,10,0.9);
+				
 			}
 		</style>
 	</head>
 	<body>
 		<div>
 			<textarea id="remark"></textarea>
+		</div>
+		<div id="alert" style="display: none;">
+			<span id="msg"></span>
 		</div>
 	</body>
 	<script type="text/javascript" src="js/jquery.js"></script>
@@ -35,5 +62,22 @@
 		$("#remark").on("change", function() {
 			localStorage.setItem("temp_remark", $("#remark").val());
 		});
+		$("#remark").on("keydown", function(e) {
+			// Ctrl + S
+			if (e.ctrlKey && e.which == 83) {
+				localStorage.setItem("temp_remark", $("#remark").val());
+				showMessage("保存成功！");
+				return false;
+			}
+
+		});
+
+		function showMessage(msg) {
+			$("#msg").html(msg);
+			$("#alert").show();
+			setTimeout(function() {
+				$("#alert").fadeOut(1000);
+			}, 1000);
+		}
 	</script>
 </html>
