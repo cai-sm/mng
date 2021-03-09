@@ -18,6 +18,7 @@
 				min-height: 300px;
 				height:100vh;
 				padding: 8px;
+				padding-left: 15px;
 				border: 0;
 				font-family: "微软雅黑";
 			}
@@ -44,9 +45,25 @@
 				box-shadow: 1px 3px 8px rgba(10,10,10,0.9);
 				
 			}
+			#menu-left{
+				position:fixed;
+				width: 100px;
+				border-right: 1px solid #cccccc;
+				background-color: whitesmoke;
+				height: 100%;
+				left: -99px;
+			}
+			#menu-left button{
+				width: 100%;
+				border: 0px;
+				border-bottom: 1px solid wheat;
+			}
 		</style>
 	</head>
 	<body>
+		<div id="menu-left">
+			<button>展开菜单</button>
+		</div>
 		<div>
 			<textarea id="remark"></textarea>
 		</div>
@@ -58,6 +75,15 @@
 	<script>
 		$(function() {
 			$("#remark").val(localStorage.getItem("temp_remark"));
+			$("#menu-left").on("mouseover", function(e){
+				$(this).animate({
+                    left: "+=99px"
+                }, 200);
+			}).on("mouseout", function(e){
+				$(this).animate({
+                    left: "-=99px"
+                }, 200);
+			});
 		});
 		$("#remark").on("change", function() {
 			localStorage.setItem("temp_remark", $("#remark").val());
