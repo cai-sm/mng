@@ -45,24 +45,38 @@
 				box-shadow: 1px 3px 8px rgba(10,10,10,0.9);
 				
 			}
+			
 			#menu-left{
 				position:fixed;
 				width: 100px;
 				border-right: 1px solid #cccccc;
 				background-color: whitesmoke;
 				height: 100%;
-				left: -99px;
+				left: -1px;
 			}
 			#menu-left button{
 				width: 100%;
 				border: 0px;
-				border-bottom: 1px solid wheat;
+				border: 1px solid wheat;
+			}
+			#menu-left button:focus{
+				outline: 0px;
+    			outline-offset: -2px;
+			}
+			div.menu-close {
+				left: -99px!important;
+			}
+			div.menu-close #menu-control{
+				position: relative;
+				left: 10px;
 			}
 		</style>
 	</head>
 	<body>
-		<div id="menu-left">
-			<button>展开菜单</button>
+		<div id="menu-left" class="menu-close">
+			<button id="menu-control">展开菜单</button>
+			<div id="btn-group"></div>
+			<button id="btn-add">+</button>
 		</div>
 		<div>
 			<textarea id="remark"></textarea>
@@ -75,16 +89,34 @@
 	<script>
 		$(function() {
 			$("#remark").val(localStorage.getItem("temp_remark"));
-			$("#menu-left").on("mouseover", function(e){
-				$(this).animate({
-                    left: "+=99px"
-                }, 200);
-			}).on("mouseout", function(e){
-				$(this).animate({
-                    left: "-=99px"
-                }, 200);
-			});
 		});
+		$("#menu-control").on("click", function(){
+			if($("#menu-left").hasClass("menu-close")){
+				$("#menu-left").removeClass("menu-close");
+			}else{
+				$("#menu-left").addClass("menu-close");
+			}
+		});
+		$("#btn-add").on("click", function(){
+			var menus = localStorage.getItem("temp_remark_menus");
+			var count = localStorage.getItem("temp_remark_menus_count");
+			if(count == null){
+				count = "0";
+				menus = "";
+			}else{
+				count = Number(count);
+			}
+			var newCount = count+1;
+			var btnId = "btn_" + newCount;
+			menus += "," + btnId;
+			localStorage.setItem("temp_remark_menus_count", newCount);
+			var newBtn = $("<button id='"+btnId+"' onclick='showRemark(this);'>Button</button>");
+			$("#btn-group").append(newBtn);
+
+		});
+		function showRemark(obj){
+
+		}
 		$("#remark").on("change", function() {
 			localStorage.setItem("temp_remark", $("#remark").val());
 		});
