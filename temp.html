@@ -12,6 +12,7 @@
 			}
 			body{
 				height:100vh;
+				
 			}
 			#remark{
 				width: calc(100% - 16px);
@@ -51,17 +52,26 @@
 				width: 100px;
 				border-right: 1px solid #cccccc;
 				background-color: whitesmoke;
+				background-color: wheat;
 				height: 100%;
 				left: -1px;
 			}
 			#menu-left button{
 				width: 100%;
-				border: 0px;
 				border: 1px solid wheat;
+				background-color: wheat;
+				font-size: 12px;
+				font-family: "宋体";
+				color: #555;
 			}
 			#menu-left button:focus{
 				outline: 0px;
     			outline-offset: -2px;
+			}
+			#menu-left button.choosed{
+				background-color: white;
+				padding: 5px 3px;
+				color: #333;
 			}
 			div.menu-close {
 				left: -99px!important;
@@ -70,13 +80,64 @@
 				position: relative;
 				left: 10px;
 			}
+			#btn-control button{
+				display: inline-block!important;
+				width: auto;
+			}
+			#btn_input{
+				width: 180px;
+			}
+			#btn_return{
+				display: inline-block;
+				width: auto;
+				line-height: 20px;
+				position: relative;
+    			top: 5px;
+			}
+			#btn_return button{
+				float: left;
+				width: auto;
+				border: 0;
+				margin-right: 1px;
+				color: white;
+				font-family: 'Courier New', Courier, monospace;
+			}
+			#btn_name_ok{
+				background-color: green!important;
+			}
+			#btn_name_cancel{
+				background-color: red!important;
+			}
+			#btn_name{
+				display: inline-block;
+				font-size: 12px;
+				width: 50%;
+			}
+			.div-hidden{
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="menu-left" class="menu-close">
-			<button id="menu-control">展开菜单</button>
-			<div id="btn-group"></div>
-			<button id="btn-add">+</button>
+			<button id="menu-control">隐藏菜单</button>
+			<hr>
+			<div id="btn-group">
+				<button id="btn_0" onclick="showRemark(0);" class="choosed">默认</button>
+			</div>
+			<div id="btn_input" class="div-hidden">
+				<input id="btn_name" placeholder="按钮名称">
+				<div id="btn_return">
+					<button id="btn_name_ok">√</button>
+					<button id="btn_name_cancel">x</button>
+				</div>
+			</div>
+			<hr>
+			<div id="btn-control">
+				<button id="btn-add">+</button>
+				<button id="btn-del">-</button>
+				<button id="btn-edit">#</button>
+			</div>
 		</div>
 		<div>
 			<textarea id="remark"></textarea>
@@ -87,8 +148,10 @@
 	</body>
 	<script type="text/javascript" src="js/jquery.js"></script>
 	<script>
+		var currKey = "btn_0";
+		var DIV_HIDDEN = "div-hidden";
 		$(function() {
-			$("#remark").val(localStorage.getItem("temp_remark"));
+			initMenus();
 		});
 		$("#menu-control").on("click", function(){
 			if($("#menu-left").hasClass("menu-close")){
@@ -97,28 +160,105 @@
 				$("#menu-left").addClass("menu-close");
 			}
 		});
-		$("#btn-add").on("click", function(){
-			var menus = localStorage.getItem("temp_remark_menus");
-			var count = localStorage.getItem("temp_remark_menus_count");
-			if(count == null){
-				count = "0";
-				menus = "";
-			}else{
-				count = Number(count);
+		function initMenus(initBtnId){
+			initBtnId = initBtnId || currKey;
+			var menuIdStr = localStorage.getItem("temp_remark_menus");
+			var menuObj = {
+				count: 0,
+				btns: [{
+					id: "btn_0",
+					name: "默认"
+				}]
 			}
-			var newCount = count+1;
-			var btnId = "btn_" + newCount;
-			menus += "," + btnId;
-			localStorage.setItem("temp_remark_menus_count", newCount);
-			var newBtn = $("<button id='"+btnId+"' onclick='showRemark(this);'>Button</button>");
-			$("#btn-group").append(newBtn);
-
-		});
-		function showRemark(obj){
+			if(menuIdStr !== null){
+				menuObj = JSON.parse(menuIdStr);
+			}
+			localStorage.setItem("temp_remark_menus", JSON.stringify(menuObj));
+			// 渲染菜单
+			$("#btn-group").empty();
+			var menus = menuObj.btns;
+			for(var i=0;i<menus.length;i++){
+				var menu = menus[i];
+				var menuId = menu.id;
+				var choosed="";
+				if(menuId == initBtnId){
+					choosed = "class='choosed'";
+				}
+				var $btn = $("<button id='"+menuId+"' onclick='showRemark(this)'  "+choosed+">"+menu.name+"</button>");
+				$("#btn-group").append($btn);
+			}
+			// 显示选中菜单内容
+			$("#remark").val(localStorage.getItem("temp_remark_" + initBtnId));
 
 		}
+		$("#btn-add").on("click", function(){	
+			$("#btn_name").val("");
+			currKey = null;
+			$("#btn_input").removeClass(DIV_HIDDEN);
+		});
+		$("#btn-del").on("click", function(){
+			if(currKey == "btn_0"){
+				alert("默认按钮不可删除");
+				return;
+			}
+			var menuIdStr = localStorage.getItem("temp_remark_menus");
+			var menuObj = JSON.parse(menuIdStr);
+			menuObj.btns = menuObj.btns.filter(function(v){
+				return v.id != currKey;
+			});
+			// 删除按钮对应内容
+			localStorage.removeItem("temp_remark_"+currKey);
+			currKey = "btn_0";
+			localStorage.setItem("temp_remark_menus", JSON.stringify(menuObj));
+			initMenus();
+		});
+		$("#btn-edit").on("click", function(){
+			if(currKey == "btn_0"){
+				alert("默认按钮不可修改");
+				return;
+			}
+			$("#btn_name").val($("#"+currKey).text());
+			$("#btn_input").removeClass(DIV_HIDDEN);		
+		});
+		$("#btn_name_ok").on("click", function(){
+			var btnName = $("#btn_name").val();
+			if(btnName == null){
+				btnName = "按钮";
+			}
+			$("#btn_input").addClass(DIV_HIDDEN);
+			var menuIdStr = localStorage.getItem("temp_remark_menus");
+			var menuObj = JSON.parse(menuIdStr);
+			if(currKey == null){
+				// 新增
+				menuObj.count += 1;
+				var newBtnId = "btn_" + menuObj.count;
+				currKey = newBtnId;
+				menuObj.btns.push({
+					id: newBtnId,
+					name: btnName
+				});
+			}else{
+				// 修改
+				var index = menuObj.btns.findIndex(function(item) {
+					return item.id === currKey;
+				});
+				if(index > 0){
+					menuObj.btns[index].name=btnName;
+				}
+			}
+			localStorage.setItem("temp_remark_menus", JSON.stringify(menuObj));
+			initMenus();		
+		});
+		$("#btn_name_cancel").on("click", function(){
+			$("#btn_input").addClass(DIV_HIDDEN);
+		});
+		function showRemark(obj){
+			var btnId = $(obj).attr("id");
+			currKey = btnId;
+			initMenus();		
+		}
 		$("#remark").on("change", function() {
-			localStorage.setItem("temp_remark", $("#remark").val());
+			localStorage.setItem("temp_remark_" + currKey, $("#remark").val());
 		});
 		$("#remark").on("keydown", function(e) {
 			// Ctrl + S
@@ -127,7 +267,6 @@
 				showMessage("保存成功！");
 				return false;
 			}
-
 		});
 
 		function showMessage(msg) {
